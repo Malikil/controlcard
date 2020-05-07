@@ -1,0 +1,14 @@
+[info]
+Distance = 153
+Title = Canada Day Populair
+BrevetNo = CDP-153
+Start = 1-Jul-2020 8:00 AM
+
+[controls]
+  0 | Langley |Yorkson Park
+ 44 | Clayburn|Straiton Hall
+77 | Chilliwack|Prtogress Way
+104 | Abbotsford | Birchwood
+153 | Langley | Yorkson Park
+
+[riders]
