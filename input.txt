@@ -1,14 +1,31 @@
+# Empty lines and lines starting with '#' are ignored
+# This can be used for comments or to temporarily remove certain lines without
+# deleting them completely
+# Section headers need to come before their contents, but the order of sections
+# can be changed freely, or a section could even be left out entirely
 [info]
 Distance = 153
 Title = Canada Day Populair
-BrevetNo = CDP-153
+BrevetNo = 
 Start = 1-Jul-2020 8:00 AM
 
 [controls]
+# Controls will show up once on the second page of the document, format as:
+# Distance | Location | Establishment
+# Whitespace around vertical lines and at beginning/end of the line is ignored
+# One control per line
   0 | Langley |Yorkson Park
  44 | Clayburn|Straiton Hall
-77 | Chilliwack|Prtogress Way
+77 | Chilliwack|Progress Way
 104 | Abbotsford | Birchwood
 153 | Langley | Yorkson Park
 
 [riders]
+# Rider information, the first rider will be autofilled onto the first page,
+# and other riders will be filled from the third page onwards
+# Name | Address line 1/Address line 2 | City | Province | Country | Postal Code | Phone | Email
+# Name | Address | City | Province | Country | Postal Code | Phone | Email
+# One rider per line, whitespace around vertical lines, beginning/end of line,
+# and the slash in address is ignored
+Eric Hagen | 265 N. Gamma Ave. | Burnaby | BC | Canada | V5C 1Y2 | 604 299 4490 | erkjagen@gmail.com
+Someone Else | Address line 1 / Address line 2 | Vancouver | BC | Canada | | | email_here@nothing.xyz

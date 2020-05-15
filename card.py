@@ -194,7 +194,7 @@ with open(filename) as file:
     section = ""
     for line in file:
         line = line.strip()
-        if line == "":
+        if line == "" or line[0] == "#":
             continue
         elif line in ["[info]", "[controls]", "[riders]"]:
             section = line
@@ -242,16 +242,12 @@ for r in riders:
     print(r)
 # Set up canvas and show info
 c = canvas.Canvas(
-    ".\\output\\hello.pdf",
+    ".\\output\\card.pdf",
     pagesize=LETTER
 )
 width, height = LETTER
-# Show first page with first rider
-if len(riders) > 0:
-    r = riders.pop(0)
-    cardFront(c, width, height, title, brevno, start, r)
-else:
-    cardFront(c, width, height, title, brevno, start)
+# Show first page as a template page for manual filling
+cardFront(c, width, height, title, brevno, start)
 c.showPage()
 # Show controls page
 cardBack(c, width, height, controls)
