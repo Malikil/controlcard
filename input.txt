@@ -27,5 +27,5 @@ Start = 1-Jul-2020 8:00 AM
 # Name | Address | City | Province | Country | Postal Code | Phone | Email
 # One rider per line, whitespace around vertical lines, beginning/end of line,
 # and the slash in address is ignored
-Eric Hagen | 265 N. Gamma Ave. | Burnaby | BC | Canada | V5C 1Y2 | 604 299 4490 | erkjagen@gmail.com
+Eric Hagen | Address Here | Burnaby | BC | Canada | PostCode | | erkjagen@gmail.com
 Someone Else | Address line 1 / Address line 2 | Vancouver | BC | Canada | | | email_here@nothing.xyz
