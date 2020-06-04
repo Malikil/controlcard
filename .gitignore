@@ -1,2 +1,5 @@
 # The output directory for pdf files
 output
+
+# Files generated when testing modules
+__pycache__/
