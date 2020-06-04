@@ -1,5 +1,5 @@
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Paragraph, Table, TableStyle
+from reportlab.platypus import Paragraph, Table, TableStyle, Frame
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.pagesizes import LETTER
 from reportlab.lib.units import inch as INCH
@@ -71,12 +71,39 @@ class CardGen:
         self.ridename = rideName
         self.brevetNo = brevetNo
         self.logo = logo
-        self.controls = controls
         # Only include up to hours in start time
         self.start = DateTime(start.year, start.month, start.day, hour=start.hour)
+        # Set controls and generate table
+        self.setControlList(controls)
 
     def setControlList(self, controls: List[Control]) -> None:
         self.controls = controls
+        # The same controls should always generate the same control lists,
+        # so the base table for displaying can be generated here instead of
+        # re-creating it every time the page should be displayed
+        # Headers
+        tableData = [
+            ["DIST (km)", "Open", "Close", "Locale",
+                "Establishment", "Signature", "Time of Passage"]
+        ]
+        # Generate table of controls
+        for control in self.controls:
+            tableData.append([
+                control.distance,
+                (self.start + control.openTime(self.distance)).strftime('%A\n%I:%M %p\n%d/%b/%y'),
+                (self.start + control.closeTime(self.distance)).strftime('%A\n%I:%M %p\n%d/%b/%y'),
+                control.location,
+                control.establishment,
+                "", "" # Signature and Time to be filled manually
+            ])
+        # Prepare the table itself
+        self.controlTable = Table(tableData, repeatRows=1)
+        self.controlTable.setStyle(TableStyle([
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('BACKGROUND', (0,0), (-1,0), "#A0A0A0"),
+            ('ROWBACKGROUNDS', (0,1), (-1,-1), ['#FFFFFF','#F0F0F0'])
+        ]))
 
     def riderPage(self, rider: Rider) -> None:
         # ================= Card Front =======================
@@ -215,32 +242,14 @@ class CardGen:
 
     def controlPage(self) -> None:
         # ==================== Card Back ========================
-        # Headers
-        tableData = [
-            ["DIST (km)", "Open", "Close", "Locale",
-                "Establishment", "Signature", "Time of Passage"]
-        ]
-        # Generate table of controls
-        for control in self.controls:
-            tableData.append([
-                control.distance,
-                (self.start + control.openTime(self.distance)).strftime('%A\n%I:%M %p\n%d/%b/%y'),
-                (self.start + control.closeTime(self.distance)).strftime('%A\n%I:%M %p\n%d/%b/%y'),
-                control.location,
-                control.establishment,
-                "", "" # Signature and Time to be filled manually
-            ])
         # Draw on the canvas
-        t = Table(tableData, repeatRows=1)
-        t.setStyle(TableStyle([
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-            ('BACKGROUND', (0,0), (-1,0), "#A0A0A0"),
-            ('ROWBACKGROUNDS', (0,1), (-1,-1), ['#FFFFFF','#F0F0F0'])
-        ]))
-        _, h = t.wrap(self.width - INCH, self.height - INCH)
-        t.drawOn(self.canvas, INCH / 2, self.height - INCH / 2 - h)
-        self.canvas.showPage()
+        f = Frame(INCH / 2, INCH / 2, self.width - INCH, self.height - INCH)
+        tlist = f.split(self.controlTable, self.canvas)
+        while len(tlist) > 0:
+            f.addFromList(tlist, self.canvas)
+            self.canvas.showPage()
+            # Not exactly sure why a new fram is needed here ¯\_(ツ)_/¯
+            f = Frame(INCH / 2, INCH / 2, self.width - INCH, self.height - INCH)
 
     def printableList(self, riderList: List[Rider]) -> None:
         # Create an empty rider page that can be printed and filled manually
